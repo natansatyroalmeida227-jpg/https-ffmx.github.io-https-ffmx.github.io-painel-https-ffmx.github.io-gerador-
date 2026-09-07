@@ -13,6 +13,7 @@ import java.security.SecureRandom;
 public class MainActivity extends Activity {
     final int red = Color.rgb(255,32,32);
     final String SENHA_PRIVADA = "Natan2012";
+    final long VALIDADE_24H = 24L * 60L * 60L * 1000L;
     LinearLayout root;
     EditText acesso, senha;
     TextView status;
@@ -33,13 +34,22 @@ public class MainActivity extends Activity {
 
     void mostrarGerador(){
         base(); TextView t=txt("🔐 Gerador FFMX",28); t.setTextColor(red); t.setGravity(Gravity.CENTER); root.addView(t);
-        TextView d=txt("Gere e copie sua senha de acesso ao painel.",15); d.setGravity(Gravity.CENTER); root.addView(d);
-        senha=campo("Sua senha aparecerá aqui",false); senha.setGravity(Gravity.CENTER); senha.setTextIsSelectable(true); senha.setInputType(1); senha.setFocusable(false);
-        Button gerar=btn("🔐 Gerar senha"); root.addView(gerar,new LinearLayout.LayoutParams(-1,-2));
-        Button copiar=btn("📋 Copiar senha"); root.addView(copiar,new LinearLayout.LayoutParams(-1,-2));
+        TextView d=txt("Gere uma key de acesso ao painel válida por 24 horas.",15); d.setGravity(Gravity.CENTER); root.addView(d);
+        senha=campo("Sua key aparecerá aqui",false); senha.setGravity(Gravity.CENTER); senha.setTextIsSelectable(true); senha.setInputType(1); senha.setFocusable(false);
+        Button gerar=btn("🔐 Gerar key (24h)"); root.addView(gerar,new LinearLayout.LayoutParams(-1,-2));
+        Button copiar=btn("📋 Copiar key"); root.addView(copiar,new LinearLayout.LayoutParams(-1,-2));
         status=txt("",14); status.setTextColor(Color.rgb(85,226,122)); status.setGravity(Gravity.CENTER); root.addView(status);
-        gerar.setOnClickListener(v->{String s=gerarSenha(12); senha.setText(s); getSharedPreferences("ffmx",0).edit().putString("ffmxSenha",s).apply(); status.setText("Senha gerada!");});
-        copiar.setOnClickListener(v->{String s=senha.getText().toString(); if(s.isEmpty()){status.setText("Gere uma senha primeiro.");return;} ClipboardManager cm=(ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE); cm.setPrimaryClip(ClipData.newPlainText("Senha FFMX",s)); status.setText("Senha copiada!");});
+        gerar.setOnClickListener(v->{
+            String s=gerarSenha(12);
+            long agora=System.currentTimeMillis();
+            senha.setText(s);
+            getSharedPreferences("ffmx",0).edit()
+                    .putString("ffmxSenha",s)
+                    .putLong("ffmxSenhaCriadaEm",agora)
+                    .apply();
+            status.setText("Key gerada. Válida por 24 horas.");
+        });
+        copiar.setOnClickListener(v->{String s=senha.getText().toString(); if(s.isEmpty()){status.setText("Gere uma key primeiro.");return;} ClipboardManager cm=(ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE); cm.setPrimaryClip(ClipData.newPlainText("Key FFMX",s)); status.setText("Key copiada!");});
         setContentView(root);
     }
     String gerarSenha(int n){ String chars="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%"; SecureRandom r=new SecureRandom(); StringBuilder s=new StringBuilder(); for(int i=0;i<n;i++)s.append(chars.charAt(r.nextInt(chars.length()))); return s.toString(); }
