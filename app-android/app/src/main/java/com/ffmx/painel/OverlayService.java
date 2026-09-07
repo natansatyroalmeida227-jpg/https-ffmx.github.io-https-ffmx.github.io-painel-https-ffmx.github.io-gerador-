@@ -73,15 +73,15 @@ public class OverlayService extends Service {
         CheckBox bala=opcao("🔫 Bala Mágica",pref.getBoolean("balaMagica",false));
         CheckBox segundo=opcao("📱 Segundo plano",pref.getBoolean("segundoPlano",false));
         box.addView(aimbot); box.addView(esp); box.addView(bala); box.addView(segundo);
-        Button salvar=botao("💾 Salvar"), abrirJogo=botao("🎮 Abrir Free Fire"), permissao=botao("🪟 Permitir sobreposição"), fechar=botao("✕ Fechar painel");
-        box.addView(salvar); box.addView(abrirJogo); box.addView(permissao); box.addView(fechar);
+        Button injetar=botao("💉 Injetar"), abrirJogo=botao("🎮 Abrir Free Fire"), permissao=botao("🪟 Permitir sobreposição"), fechar=botao("✕ Fechar painel");
+        box.addView(injetar); box.addView(abrirJogo); box.addView(permissao); box.addView(fechar);
 
         int type=Build.VERSION.SDK_INT>=26?WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY:WindowManager.LayoutParams.TYPE_PHONE;
         WindowManager.LayoutParams mp=new WindowManager.LayoutParams(dp(300),WindowManager.LayoutParams.WRAP_CONTENT,type,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL|WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,-3);
         mp.gravity=Gravity.TOP|Gravity.START; mp.x=Math.max(8,Math.min(x-210,getResources().getDisplayMetrics().widthPixels-dp(308))); mp.y=Math.max(8,y-dp(170));
         menu=box; wm.addView(menu,mp);
-        salvar.setOnClickListener(v->{ pref.edit().putBoolean("aimbot",aimbot.isChecked()).putBoolean("esp",esp.isChecked()).putBoolean("balaMagica",bala.isChecked()).putBoolean("segundoPlano",segundo.isChecked()).apply(); Toast.makeText(this,"Opções salvas.",Toast.LENGTH_SHORT).show(); });
+        injetar.setOnClickListener(v->{ pref.edit().putBoolean("aimbot",aimbot.isChecked()).putBoolean("esp",esp.isChecked()).putBoolean("balaMagica",bala.isChecked()).putBoolean("segundoPlano",segundo.isChecked()).apply(); Toast.makeText(this,"Opções injetadas.",Toast.LENGTH_SHORT).show(); });
         segundo.setOnClickListener(v->{ pref.edit().putBoolean("segundoPlano",segundo.isChecked()).apply(); if(segundo.isChecked()) Toast.makeText(this,"Segundo plano ativado.",Toast.LENGTH_SHORT).show(); });
         abrirJogo.setOnClickListener(v->abrirFreeFire()); permissao.setOnClickListener(v->abrirPermissao()); fechar.setOnClickListener(v->fecharMenu());
     }
