@@ -173,9 +173,13 @@ public class OverlayService extends Service {
         int type = Build.VERSION.SDK_INT >= 26
                 ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
                 : WindowManager.LayoutParams.TYPE_PHONE;
+        // O menu não recebe foco do sistema. Assim, abrir o painel não congela
+        // nem toma o foco da tela do aplicativo que está por baixo.
         WindowManager.LayoutParams mp = new WindowManager.LayoutParams(
                 dp(300), WindowManager.LayoutParams.WRAP_CONTENT, type,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 -3);
         mp.gravity = Gravity.TOP | Gravity.START;
         mp.x = Math.max(8, Math.min(x - 210, getResources().getDisplayMetrics().widthPixels - dp(308)));
