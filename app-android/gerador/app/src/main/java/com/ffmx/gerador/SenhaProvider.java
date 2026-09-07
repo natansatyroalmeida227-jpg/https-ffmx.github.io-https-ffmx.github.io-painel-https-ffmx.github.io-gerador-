@@ -15,8 +15,9 @@ public class SenhaProvider extends ContentProvider {
     @Override public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         if (getContext() == null) return null;
         String senha = getContext().getSharedPreferences("ffmx", 0).getString("ffmxSenha", "");
-        MatrixCursor c = new MatrixCursor(new String[]{"senha"});
-        if (!senha.isEmpty()) c.addRow(new Object[]{senha});
+        long criadaEm = getContext().getSharedPreferences("ffmx", 0).getLong("ffmxSenhaCriadaEm", 0L);
+        MatrixCursor c = new MatrixCursor(new String[]{"senha", "criada_em"});
+        if (!senha.isEmpty() && criadaEm > 0L) c.addRow(new Object[]{senha, criadaEm});
         return c;
     }
     @Override public String getType(Uri uri) { return "vnd.android.cursor.item/vnd.ffmx.senha"; }
