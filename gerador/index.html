@@ -5,11 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gerador FFMX</title>
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#080808;color:#fff;font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center}.container{width:100%;max-width:520px;padding:20px}.panel{background:#111;border:1px solid #2b2b2b;border-radius:18px;padding:28px;box-shadow:0 0 25px rgba(255,0,0,.1);text-align:center}h1{margin:0 0 10px}.muted{color:#999;margin-bottom:25px}.input{width:100%;padding:16px;border-radius:10px;border:1px solid #333;background:#070707;color:#fff;outline:none;text-align:center;font-size:20px;letter-spacing:2px}.btn{width:100%;border:0;border-radius:10px;padding:16px;margin-top:14px;background:#ff2020;color:#fff;font-size:16px;font-weight:bold;cursor:pointer}.btn:hover{background:#d90000}.status{min-height:22px;margin-top:15px;color:#55e27a}.back{display:block;margin-top:20px;color:#ff3030;text-decoration:none;font-weight:bold}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#080808;color:#fff;font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center}.container{width:100%;max-width:520px;padding:20px}.panel{background:#111;border:1px solid #2b2b2b;border-radius:18px;padding:28px;box-shadow:0 0 25px rgba(255,0,0,.1);text-align:center}h1{margin:0 0 10px}.muted{color:#999;margin-bottom:25px}.input{width:100%;padding:16px;border-radius:10px;border:1px solid #333;background:#070707;color:#fff;outline:none;text-align:center;font-size:20px;letter-spacing:2px}.btn{width:100%;border:0;border-radius:10px;padding:16px;margin-top:14px;background:#ff2020;color:#fff;font-size:16px;font-weight:bold;cursor:pointer}.btn:hover{background:#d90000}.status{min-height:22px;margin-top:15px;color:#55e27a}.back{display:block;margin-top:20px;color:#ff3030;text-decoration:none;font-weight:bold}.hidden{display:none}
 </style>
 </head>
 <body>
-<main class="container"><section class="panel">
+<main class="container"><section class="panel" id="acesso">
+<h1>🔒 Gerador FFMX privado</h1>
+<p class="muted">Área exclusiva. Digite sua senha para acessar.</p>
+<input class="input" id="chave" type="password" placeholder="Senha de acesso" autocomplete="off">
+<button class="btn" id="entrar">Entrar</button>
+<p id="acessoStatus" class="status"></p>
+</section>
+<section class="panel hidden" id="gerador">
 <h1>🔐 Gerador FFMX</h1>
 <p class="muted">Gere e copie sua senha de acesso ao painel.</p>
 <input class="input" id="senha" type="text" readonly placeholder="Sua senha aparecerá aqui">
@@ -19,7 +26,11 @@
 <a class="back" href="../painel/index.html">→ Abrir Painel FFMX</a>
 </section></main>
 <script>
+const SENHA_PRIVADA="Natan2012";
 function gerarSenha(tamanho=12){const caracteres="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%";let senha="";const valores=new Uint32Array(tamanho);crypto.getRandomValues(valores);for(let i=0;i<tamanho;i++)senha+=caracteres[valores[i]%caracteres.length];return senha}
+function entrar(){const digitada=document.getElementById("chave").value,status=document.getElementById("acessoStatus");if(digitada===SENHA_PRIVADA){document.getElementById("acesso").classList.add("hidden");document.getElementById("gerador").classList.remove("hidden");}else{status.textContent="Senha incorreta."}}
+document.getElementById("entrar").addEventListener("click",entrar);
+document.getElementById("chave").addEventListener("keydown",e=>{if(e.key==="Enter")entrar()});
 document.getElementById("gerar").addEventListener("click",()=>{const senha=gerarSenha();document.getElementById("senha").value=senha;localStorage.setItem("ffmxSenha",senha);document.getElementById("status").textContent="Senha gerada!"});
 document.getElementById("copiar").addEventListener("click",async()=>{const campo=document.getElementById("senha"),senha=campo.value,status=document.getElementById("status");if(!senha){status.textContent="Gere uma senha primeiro.";return}try{await navigator.clipboard.writeText(senha)}catch(e){campo.select();document.execCommand("copy")}status.textContent="Senha copiada!"});
 </script>
