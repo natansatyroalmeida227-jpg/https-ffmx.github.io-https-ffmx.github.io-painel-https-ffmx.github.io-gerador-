@@ -1,15 +1,41 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Painel FFMX</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel FFMX</title>
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#080808;color:#fff;font-family:Arial,sans-serif}.container{width:100%;max-width:700px;margin:auto;padding:20px}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.topbar a{color:#ff2020;text-decoration:none;font-weight:bold}.badge{background:#ff2020;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:bold}.panel{background:#111;border:1px solid #2b2b2b;border-radius:18px;padding:25px;margin-bottom:18px;box-shadow:0 0 25px rgba(255,0,0,.08)}h1{margin-top:0}.muted{color:#999;line-height:1.5}.input{width:100%;padding:15px;border-radius:10px;border:1px solid #333;background:#070707;color:#fff;outline:none;margin-top:10px}.btn{width:100%;border:0;border-radius:10px;padding:15px;margin-top:15px;background:#ff2020;color:#fff;font-size:15px;font-weight:bold;cursor:pointer}.btn:hover{background:#d90000}.status{min-height:22px;margin-top:15px;color:#ff5555}.success{color:#55e27a}.setting{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:18px 0;border-bottom:1px solid #252525}.setting span{display:flex;flex-direction:column;gap:6px}.setting small{color:#999}.setting input{width:22px;height:22px;accent-color:#ff2020}.logout{background:#222}.logout:hover{background:#333}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#080808;color:#fff;font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center}.container{width:100%;max-width:520px;padding:20px}.panel{background:#111;border:1px solid #2b2b2b;border-radius:18px;padding:28px;box-shadow:0 0 30px rgba(255,0,0,.12)}h1{text-align:center;margin:0 0 10px}.muted{text-align:center;color:#999;line-height:1.5;margin-bottom:24px}.input{width:100%;padding:16px;border-radius:10px;border:1px solid #333;background:#070707;color:#fff;outline:none;font-size:17px;text-align:center}.input:focus{border-color:#ff2020}.btn{width:100%;border:0;border-radius:10px;padding:16px;margin-top:14px;background:#ff2020;color:#fff;font-size:16px;font-weight:bold;cursor:pointer}.btn:hover{background:#d90000}.status{min-height:22px;margin-top:15px;text-align:center;color:#ff5555}.success{color:#55e27a}.setting{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:18px 0;border-bottom:1px solid #252525}.setting span{display:flex;flex-direction:column;gap:6px}.setting small{color:#999}.setting input{width:22px;height:22px;accent-color:#ff2020}.logout{background:#222}.logout:hover{background:#333}.gerador{display:block;text-align:center;margin-top:18px;color:#ff3030;text-decoration:none;font-weight:bold}
 </style>
 </head>
-<body><main class="container"><header class="topbar"><a href="../index.html">← FFMX</a><span class="badge">PAINEL</span></header>
-<section class="panel" id="login"><h1>🔐 Acesso ao Painel</h1><p class="muted">Digite a senha criada no Gerador FFMX.</p><input class="input" id="senha" type="password" placeholder="Digite sua senha" autocomplete="off"><button class="btn" id="entrar">Abrir painel</button><p id="status" class="status"></p></section>
-<section class="panel" id="conteudo" style="display:none"><h1>⚙️ Configurações</h1><p class="muted">Configure as opções do Painel FFMX.</p><label class="setting"><span><strong>Modo desempenho</strong><small>Prioriza uma configuração mais leve.</small></span><input type="checkbox" id="desempenho"></label><label class="setting"><span><strong>Interface compacta</strong><small>Reduz os espaçamentos da interface.</small></span><input type="checkbox" id="compacta"></label><label class="setting"><span><strong>Notificações</strong><small>Exibe mensagens de confirmação.</small></span><input type="checkbox" id="notificacoes" checked></label><button class="btn" id="salvar">💾 Salvar configurações</button><p id="saveStatus" class="status"></p><button class="btn logout" id="sair">Sair do painel</button></section></main>
+<body>
+<main class="container">
+<section class="panel" id="login">
+<h1>🔐 Acesso ao Painel FFMX</h1>
+<p class="muted">Digite a senha que foi criada no Gerador FFMX para entrar.</p>
+<input class="input" id="senha" type="password" placeholder="Digite a senha do gerador" autocomplete="off">
+<button class="btn" id="entrar">🔓 Entrar no painel</button>
+<p id="status" class="status"></p>
+<a class="gerador" href="../gerador/index.html">→ Ir para o Gerador FFMX</a>
+</section>
+<section class="panel" id="conteudo" style="display:none">
+<h1>⚙️ Painel FFMX</h1>
+<p class="muted">Configurações do painel.</p>
+<label class="setting"><span><strong>Modo desempenho</strong><small>Prioriza uma configuração mais leve.</small></span><input type="checkbox" id="desempenho"></label>
+<label class="setting"><span><strong>Interface compacta</strong><small>Reduz os espaçamentos da interface.</small></span><input type="checkbox" id="compacta"></label>
+<label class="setting"><span><strong>Notificações</strong><small>Exibe mensagens de confirmação.</small></span><input type="checkbox" id="notificacoes" checked></label>
+<button class="btn" id="salvar">💾 Salvar configurações</button>
+<p id="saveStatus" class="status"></p>
+<button class="btn logout" id="sair">Sair do painel</button>
+</section>
+</main>
 <script>
-const senhaSalva=localStorage.getItem("ffmxSenha");document.getElementById("entrar").addEventListener("click",function(){const digitada=document.getElementById("senha").value,status=document.getElementById("status");if(!senhaSalva){status.textContent="Nenhuma senha foi criada. Abra o Gerador FFMX primeiro.";return}if(digitada===senhaSalva){document.getElementById("login").style.display="none";document.getElementById("conteudo").style.display="block"}else status.textContent="Senha incorreta."});
-const ids=["desempenho","compacta","notificacoes"],saved=JSON.parse(localStorage.getItem("ffmxConfig")||"{}");ids.forEach(id=>{if(typeof saved[id]==="boolean")document.getElementById(id).checked=saved[id]});document.getElementById("salvar").addEventListener("click",function(){const c={};ids.forEach(id=>c[id]=document.getElementById(id).checked);localStorage.setItem("ffmxConfig",JSON.stringify(c));const s=document.getElementById("saveStatus");s.textContent="Configurações salvas!";s.className="status success"});document.getElementById("sair").addEventListener("click",function(){document.getElementById("conteudo").style.display="none";document.getElementById("login").style.display="block";document.getElementById("senha").value=""});
-</script></body></html>
+const senha=document.getElementById('senha'),status=document.getElementById('status');
+function entrar(){const senhaSalva=localStorage.getItem('ffmxSenha'),digitada=senha.value.trim();if(!senhaSalva){status.textContent='Nenhuma senha encontrada. Gere uma senha primeiro no Gerador FFMX.';return}if(digitada===senhaSalva){document.getElementById('login').style.display='none';document.getElementById('conteudo').style.display='block';status.textContent=''}else{status.textContent='Senha incorreta.'}}
+document.getElementById('entrar').addEventListener('click',entrar);senha.addEventListener('keydown',e=>{if(e.key==='Enter')entrar()});
+const ids=['desempenho','compacta','notificacoes'],saved=JSON.parse(localStorage.getItem('ffmxConfig')||'{}');ids.forEach(id=>{if(typeof saved[id]==='boolean')document.getElementById(id).checked=saved[id]});
+document.getElementById('salvar').addEventListener('click',()=>{const c={};ids.forEach(id=>c[id]=document.getElementById(id).checked);localStorage.setItem('ffmxConfig',JSON.stringify(c));const s=document.getElementById('saveStatus');s.textContent='Configurações salvas!';s.className='status success'});
+document.getElementById('sair').addEventListener('click',()=>{document.getElementById('conteudo').style.display='none';document.getElementById('login').style.display='block';senha.value='';senha.focus()});
+</script>
+</body>
+</html>
