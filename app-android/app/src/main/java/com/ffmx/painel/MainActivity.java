@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -30,6 +31,8 @@ public class MainActivity extends Activity {
     private CheckBox balaMagica;
     private CheckBox segundoPlano;
     private TextView status;
+
+    private static final Uri GERADOR_URI = Uri.parse("content://com.ffmx.gerador.senha/senha");
 
     @Override
     public void onCreate(Bundle b) {
@@ -67,6 +70,18 @@ public class MainActivity extends Activity {
         root.setBackgroundColor(Color.rgb(8, 8, 8));
     }
 
+    String senhaDoGerador() {
+        Cursor c = null;
+        try {
+            c = getContentResolver().query(GERADOR_URI, new String[]{"senha"}, null, null, null);
+            if (c != null && c.moveToFirst()) return c.getString(0);
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return "";
+    }
+
     void mostrarLogin() {
         prepararRoot();
 
@@ -75,7 +90,7 @@ public class MainActivity extends Activity {
         title.setGravity(Gravity.CENTER);
         root.addView(title, new LinearLayout.LayoutParams(-1, -2));
         root.addView(texto("🔐 Acesso ao Painel", 23));
-        root.addView(texto("Digite a senha criada no Gerador FFMX.", 15));
+        root.addView(texto("Use a senha criada no Gerador FFMX.", 15));
 
         final android.widget.EditText senha = new android.widget.EditText(this);
         senha.setHint("Digite sua senha");
@@ -87,26 +102,35 @@ public class MainActivity extends Activity {
         Button entrar = botao("Abrir painel");
         root.addView(entrar, new LinearLayout.LayoutParams(-1, -2));
 
-        TextView info = texto("A senha é usada somente para liberar este aplicativo.", 13);
+        Button atualizar = botao("🔄 Atualizar senha do Gerador");
+        root.addView(atualizar, new LinearLayout.LayoutParams(-1, -2));
+
+        TextView info = texto("Gere uma senha no Gerador FFMX. Ela será reconhecida automaticamente pelo Painel enquanto o Gerador estiver instalado.", 13);
         info.setTextColor(Color.GRAY);
         root.addView(info);
 
         entrar.setOnClickListener(v -> {
             String typed = senha.getText().toString();
-            String saved = prefs.getString("senha", "");
-            if (saved.isEmpty()) {
-                // Na primeira abertura, a senha digitada é cadastrada no próprio APK.
-                if (typed.trim().isEmpty()) {
-                    Toast.makeText(this, "Digite uma senha.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                prefs.edit().putString("senha", typed).apply();
-                Toast.makeText(this, "Senha cadastrada.", Toast.LENGTH_SHORT).show();
-                mostrarPainel();
-            } else if (typed.equals(saved)) {
+            String generated = senhaDoGerador();
+            if (generated.isEmpty()) {
+                Toast.makeText(this, "Nenhuma senha encontrada. Abra o Gerador FFMX e gere uma senha.", Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (typed.equals(generated)) {
+                prefs.edit().putString("senha", generated).apply();
                 mostrarPainel();
             } else {
                 Toast.makeText(this, "Senha incorreta.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        atualizar.setOnClickListener(v -> {
+            String generated = senhaDoGerador();
+            if (generated.isEmpty()) {
+                Toast.makeText(this, "Gere uma senha primeiro no Gerador FFMX.", Toast.LENGTH_LONG).show();
+            } else {
+                senha.setText(generated);
+                Toast.makeText(this, "Senha do Gerador carregada.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -137,7 +161,6 @@ public class MainActivity extends Activity {
         esp = opcao("👁️ ESP", "Opção do painel.");
         balaMagica = opcao("🔫 Bala Mágica", "Opção do painel.");
         root.addView(aimbot.getParent() == null ? aimbot : new View(this));
-        // As opções são adicionadas por addOpcao para manter o layout completo.
         root.removeView(aimbot);
         adicionarOpcao("🎯 Aimbot", "Opção do painel.", aimbot);
         adicionarOpcao("👁️ ESP", "Opção do painel.", esp);
