@@ -5,12 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gerador FFMX</title>
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#080808;color:#fff;font-family:Arial,sans-serif}.container{width:100%;max-width:600px;margin:auto;padding:20px}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.topbar a{color:#ff2020;text-decoration:none;font-weight:bold}.badge{background:#ff2020;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:bold}.panel{background:#111;border:1px solid #2b2b2b;border-radius:18px;padding:25px;box-shadow:0 0 25px rgba(255,0,0,.08)}h1{margin-top:0}.muted{color:#999;line-height:1.5}.input{width:100%;padding:15px;margin-top:10px;border-radius:10px;border:1px solid #333;background:#070707;color:#fff;outline:none}.password{text-align:center;font-size:20px;letter-spacing:2px}.row{display:flex;gap:10px}.row .btn{flex:1}.btn{width:100%;border:0;border-radius:10px;padding:15px;margin-top:15px;background:#ff2020;color:#fff;font-size:15px;font-weight:bold;cursor:pointer}.btn:hover{background:#d90000}.status{min-height:22px;margin-top:15px;color:#ff5555}.success{color:#55e27a}.link{display:block;margin-top:22px;text-align:center;color:#ff3030;text-decoration:none;font-weight:bold}.info{margin-top:20px;padding:15px;border-radius:10px;background:#0a0a0a;border:1px solid #222;color:#aaa;font-size:13px;line-height:1.5}@media(max-width:480px){.row{flex-direction:column;gap:0}}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#080808;color:#fff;font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center}.container{width:100%;max-width:520px;padding:20px}.panel{background:#111;border:1px solid #2b2b2b;border-radius:18px;padding:28px;box-shadow:0 0 25px rgba(255,0,0,.1);text-align:center}h1{margin:0 0 10px}.muted{color:#999;margin-bottom:25px}.input{width:100%;padding:16px;border-radius:10px;border:1px solid #333;background:#070707;color:#fff;outline:none;text-align:center;font-size:20px;letter-spacing:2px}.btn{width:100%;border:0;border-radius:10px;padding:16px;margin-top:14px;background:#ff2020;color:#fff;font-size:16px;font-weight:bold;cursor:pointer}.btn:hover{background:#d90000}.status{min-height:22px;margin-top:15px;color:#55e27a}.back{display:block;margin-top:20px;color:#ff3030;text-decoration:none;font-weight:bold}
 </style>
 </head>
-<body><main class="container"><header class="topbar"><a href="../index.html">← FFMX</a><span class="badge">GERADOR</span></header><section class="panel"><h1>Gerador FFMX</h1><p class="muted">Gere uma senha para acessar o Painel FFMX.</p><input class="input password" id="senha" type="text" readonly placeholder="Sua senha aparecerá aqui"><div class="row"><button class="btn" id="gerar">🔐 Gerar senha</button><button class="btn" id="copiar">📋 Copiar</button></div><p id="status" class="status"></p><div class="info">A senha é salva somente neste navegador. Para abrir o painel neste mesmo navegador, use a senha gerada aqui.</div><a class="link" href="../painel/index.html">→ Abrir Painel FFMX</a></section></main>
+<body>
+<main class="container"><section class="panel">
+<h1>🔐 Gerador FFMX</h1>
+<p class="muted">Gere e copie sua senha de acesso ao painel.</p>
+<input class="input" id="senha" type="text" readonly placeholder="Sua senha aparecerá aqui">
+<button class="btn" id="gerar">🔐 Gerar senha</button>
+<button class="btn" id="copiar">📋 Copiar senha</button>
+<p id="status" class="status"></p>
+<a class="back" href="../painel/index.html">→ Abrir Painel FFMX</a>
+</section></main>
 <script>
 function gerarSenha(tamanho=12){const caracteres="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%";let senha="";const valores=new Uint32Array(tamanho);crypto.getRandomValues(valores);for(let i=0;i<tamanho;i++)senha+=caracteres[valores[i]%caracteres.length];return senha}
-document.getElementById("gerar").addEventListener("click",function(){const senha=gerarSenha(12);document.getElementById("senha").value=senha;localStorage.setItem("ffmxSenha",senha);const status=document.getElementById("status");status.textContent="Senha gerada e salva neste navegador.";status.className="status success"});
-document.getElementById("copiar").addEventListener("click",async function(){const campo=document.getElementById("senha"),senha=campo.value,status=document.getElementById("status");if(!senha){status.textContent="Gere uma senha primeiro.";status.className="status";return}try{await navigator.clipboard.writeText(senha)}catch(e){campo.select();document.execCommand("copy")}status.textContent="Senha copiada!";status.className="status success"});
-</script></body></html>
+document.getElementById("gerar").addEventListener("click",()=>{const senha=gerarSenha();document.getElementById("senha").value=senha;localStorage.setItem("ffmxSenha",senha);document.getElementById("status").textContent="Senha gerada!"});
+document.getElementById("copiar").addEventListener("click",async()=>{const campo=document.getElementById("senha"),senha=campo.value,status=document.getElementById("status");if(!senha){status.textContent="Gere uma senha primeiro.";return}try{await navigator.clipboard.writeText(senha)}catch(e){campo.select();document.execCommand("copy")}status.textContent="Senha copiada!"});
+</script>
+</body></html>
