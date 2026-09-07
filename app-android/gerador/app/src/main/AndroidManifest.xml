@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <queries>
+        <package android:name="com.ffmx.painel" />
+    </queries>
+
     <application android:theme="@style/AppTheme" android:label="Gerador FFMX" android:icon="@drawable/ffmx_logo" android:allowBackup="false" android:supportsRtl="true">
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
