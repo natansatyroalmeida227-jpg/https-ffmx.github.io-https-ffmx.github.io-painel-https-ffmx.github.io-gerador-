@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -14,6 +15,7 @@ public class MainActivity extends Activity {
     final int red = Color.rgb(255,32,32);
     final String SENHA_PRIVADA = "Natan2012";
     final long VALIDADE_24H = 24L * 60L * 60L * 1000L;
+    final String PAINEL_PACKAGE = "com.ffmx.painel";
     LinearLayout root;
     EditText acesso, senha;
     TextView status;
@@ -38,6 +40,7 @@ public class MainActivity extends Activity {
         senha=campo("Sua key aparecerá aqui",false); senha.setGravity(Gravity.CENTER); senha.setTextIsSelectable(true); senha.setInputType(1); senha.setFocusable(false);
         Button gerar=btn("🔐 Gerar key (24h)"); root.addView(gerar,new LinearLayout.LayoutParams(-1,-2));
         Button copiar=btn("📋 Copiar key"); root.addView(copiar,new LinearLayout.LayoutParams(-1,-2));
+        Button abrirPainel=btn("🎮 Abrir app Painel FFMX"); root.addView(abrirPainel,new LinearLayout.LayoutParams(-1,-2));
         status=txt("",14); status.setTextColor(Color.rgb(85,226,122)); status.setGravity(Gravity.CENTER); root.addView(status);
         gerar.setOnClickListener(v->{
             String s=gerarSenha(12);
@@ -50,7 +53,17 @@ public class MainActivity extends Activity {
             status.setText("Key gerada. Válida por 24 horas.");
         });
         copiar.setOnClickListener(v->{String s=senha.getText().toString(); if(s.isEmpty()){status.setText("Gere uma key primeiro.");return;} ClipboardManager cm=(ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE); cm.setPrimaryClip(ClipData.newPlainText("Key FFMX",s)); status.setText("Key copiada!");});
+        abrirPainel.setOnClickListener(v->abrirPainel());
         setContentView(root);
     }
+
+    void abrirPainel(){
+        try {
+            Intent i=getPackageManager().getLaunchIntentForPackage(PAINEL_PACKAGE);
+            if(i!=null){ startActivity(i); return; }
+            status.setText("Instale o app Painel FFMX para abrir por aqui.");
+        } catch(Exception e){ status.setText("Não foi possível abrir o Painel FFMX."); }
+    }
+
     String gerarSenha(int n){ String chars="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%"; SecureRandom r=new SecureRandom(); StringBuilder s=new StringBuilder(); for(int i=0;i<n;i++)s.append(chars.charAt(r.nextInt(chars.length()))); return s.toString(); }
 }
