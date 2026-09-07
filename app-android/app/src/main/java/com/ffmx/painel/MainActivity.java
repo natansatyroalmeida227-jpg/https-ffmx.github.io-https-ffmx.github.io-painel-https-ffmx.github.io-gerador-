@@ -53,7 +53,6 @@ public class MainActivity extends Activity {
         if (key.isEmpty() || criadaEm <= 0L || System.currentTimeMillis() - criadaEm >= VALIDADE_24H) {
             handler.removeCallbacks(expiracao);
             prefs.edit().remove("senha").remove("senhaCriadaEm").putBoolean("logado", false).apply();
-            Toast.makeText(this, "Sua key expirou. Gere uma nova key no Gerador FFMX.", Toast.LENGTH_LONG).show();
             mostrarLogin();
             return;
         }
@@ -64,15 +63,15 @@ public class MainActivity extends Activity {
     void mostrarLogin() {
         prepararRoot();
         TextView title = texto("FFMX",34); title.setTextColor(red); title.setGravity(Gravity.CENTER); root.addView(title,new LinearLayout.LayoutParams(-1,-2));
-        root.addView(texto("🔐 Acesso ao Painel",23)); root.addView(texto("Use a key criada no Gerador FFMX. Cada key vale por 24 horas.",15));
+        root.addView(texto("🔐 Acesso ao Painel",23)); root.addView(texto("Digite a key criada no Gerador FFMX.",15));
         final android.widget.EditText senha = new android.widget.EditText(this); senha.setHint("Digite sua key"); senha.setHintTextColor(Color.GRAY); senha.setTextColor(Color.WHITE); senha.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD); root.addView(senha,new LinearLayout.LayoutParams(-1,-2));
         Button entrar = botao("Abrir painel"); root.addView(entrar,new LinearLayout.LayoutParams(-1,-2));
-        TextView info = texto("A validade é controlada pela data em que a key foi gerada. Não é necessário atualizar manualmente.",13); info.setTextColor(Color.GRAY); root.addView(info);
+        TextView info = texto("A key fica válida por 24 horas após ser criada.",13); info.setTextColor(Color.GRAY); root.addView(info);
         entrar.setOnClickListener(v -> {
             String typed = senha.getText().toString(); String[] dados = new String[2];
-            if (!obterKey(dados)) { Toast.makeText(this,"Nenhuma key encontrada. Abra o Gerador FFMX e gere uma nova key.",Toast.LENGTH_LONG).show(); return; }
-            long criadaEm; try { criadaEm = Long.parseLong(dados[1]); } catch(Exception e) { Toast.makeText(this,"Data da key inválida. Gere uma nova key.",Toast.LENGTH_LONG).show(); return; }
-            if (System.currentTimeMillis() - criadaEm >= VALIDADE_24H) { Toast.makeText(this,"Key expirada. Gere uma nova key no Gerador FFMX.",Toast.LENGTH_LONG).show(); return; }
+            if (!obterKey(dados)) { Toast.makeText(this,"Key não encontrada.",Toast.LENGTH_LONG).show(); return; }
+            long criadaEm; try { criadaEm = Long.parseLong(dados[1]); } catch(Exception e) { Toast.makeText(this,"Key inválida.",Toast.LENGTH_LONG).show(); return; }
+            if (System.currentTimeMillis() - criadaEm >= VALIDADE_24H) { Toast.makeText(this,"Key expirada.",Toast.LENGTH_SHORT).show(); return; }
             if (typed.equals(dados[0])) { prefs.edit().putString("senha",dados[0]).putLong("senhaCriadaEm",criadaEm).putBoolean("logado",true).apply(); mostrarPainel(); verificarSessao(); }
             else Toast.makeText(this,"Key incorreta.",Toast.LENGTH_SHORT).show();
         });
@@ -82,7 +81,7 @@ public class MainActivity extends Activity {
     void mostrarPainel() {
         prepararRoot(); LinearLayout top=new LinearLayout(this); top.setOrientation(LinearLayout.HORIZONTAL); top.setGravity(Gravity.CENTER_VERTICAL);
         TextView title=texto("🎮 Painel FFMX",26); title.setTextColor(red); top.addView(title,new LinearLayout.LayoutParams(0,-2,1)); TextView badge=texto("24H",12); badge.setTextColor(Color.WHITE); badge.setGravity(Gravity.CENTER); badge.setBackgroundColor(red); top.addView(badge,new LinearLayout.LayoutParams(110,48)); root.addView(top);
-        TextView desc=texto("Sua key é válida por 24 horas. Depois desse período, gere uma nova key no Gerador FFMX. As opções Aimbot, ESP e Bala Mágica são apenas controles visuais do aplicativo.",14); desc.setTextColor(Color.LTGRAY); root.addView(desc);
+        TextView desc=texto("Sua key é válida por 24 horas. As opções Aimbot, ESP e Bala Mágica são apenas controles visuais do aplicativo.",14); desc.setTextColor(Color.LTGRAY); root.addView(desc);
         aimbot=opcao("🎯 Aimbot","Opção do painel."); esp=opcao("👁️ ESP","Opção do painel."); balaMagica=opcao("🔫 Bala Mágica","Opção do painel."); adicionarOpcao("🎯 Aimbot","Opção do painel.",aimbot); adicionarOpcao("👁️ ESP","Opção do painel.",esp); adicionarOpcao("🔫 Bala Mágica","Opção do painel.",balaMagica);
         LinearLayout bgBox=caixa(); segundoPlano=new CheckBox(this); segundoPlano.setText("📱 Segundo plano"); segundoPlano.setTextColor(Color.WHITE); segundoPlano.setTextSize(16); segundoPlano.setButtonTintList(new android.content.res.ColorStateList(new int[][]{new int[]{android.R.attr.state_checked},new int[]{}},new int[]{red,Color.GRAY})); segundoPlano.setChecked(prefs.getBoolean("segundoPlano",false)); bgBox.addView(segundoPlano,new LinearLayout.LayoutParams(-1,-2)); TextView bgInfo=texto("Mantém o serviço FFMX em primeiro plano para o botão flutuante. Depende das permissões do Android.",12); bgInfo.setTextColor(Color.GRAY); bgBox.addView(bgInfo); root.addView(bgBox);
         LinearLayout overlayBox=caixa(); overlayBox.addView(texto("🪟 Sobrepor a outros apps",16)); TextView overlayInfo=texto("Permita a sobreposição nas configurações do Android para usar o botão flutuante FFMX.",12); overlayInfo.setTextColor(Color.GRAY); overlayBox.addView(overlayInfo); Button perm=botao("⚙️ Permitir sobreposição"); overlayBox.addView(perm); perm.setOnClickListener(v->abrirPermissao()); root.addView(overlayBox);
