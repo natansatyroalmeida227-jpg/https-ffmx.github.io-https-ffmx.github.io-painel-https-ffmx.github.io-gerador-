@@ -7,6 +7,7 @@
     <application
         android:theme="@style/AppTheme"
         android:label="FFMX"
+        android:icon="@drawable/ffmx_logo"
         android:allowBackup="false"
         android:supportsRtl="true">
 
