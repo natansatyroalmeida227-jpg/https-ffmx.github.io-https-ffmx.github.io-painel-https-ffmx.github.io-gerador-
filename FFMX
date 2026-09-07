@@ -1,0 +1,15 @@
+FFMX
+│
+├── index.html
+│
+├── painel
+│   └── index.html
+│
+├── gerador
+│   └── index.html
+│
+├── css
+│   └── style.css
+│
+└── js
+    └── app.js
