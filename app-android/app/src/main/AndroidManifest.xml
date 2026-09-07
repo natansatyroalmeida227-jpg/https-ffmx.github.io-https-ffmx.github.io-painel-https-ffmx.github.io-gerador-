@@ -4,6 +4,11 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <queries>
+        <provider android:authorities="com.ffmx.gerador.senha" />
+        <package android:name="com.ffmx.gerador" />
+    </queries>
+
     <application
         android:theme="@style/AppTheme"
         android:label="FFMX"
