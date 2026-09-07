@@ -21,11 +21,12 @@
 </section>
 <section class="panel" id="conteudo" style="display:none">
 <h1>🎮 Painel FFMX</h1>
-<p class="muted">Ative as opções e toque em Salvar.</p>
+<p class="muted">Ative as opções e use os botões abaixo.</p>
 <label class="option"><span><strong>🎯 Aimbot</strong><small>Ativar opção Aimbot no painel.</small></span><input type="checkbox" id="aimbot"></label>
 <label class="option"><span><strong>👁️ ESP</strong><small>Ativar opção ESP no painel.</small></span><input type="checkbox" id="esp"></label>
 <label class="option"><span><strong>🔫 Bala Mágica</strong><small>Ativar opção Bala Mágica no painel.</small></span><input type="checkbox" id="balaMagica"></label>
-<button class="btn" id="salvar">💾 Salvar e abrir Free Fire</button>
+<button class="btn" id="salvar">💾 Salvar</button>
+<button class="btn" id="abrirFreeFire">🎮 Abrir Free Fire</button>
 <p id="saveStatus" class="status"></p>
 <button class="btn logout" id="sair">Sair do painel</button>
 </section>
@@ -34,9 +35,12 @@
 const ids=["aimbot","esp","balaMagica"];
 function carregar(){const saved=JSON.parse(localStorage.getItem("ffmxConfig")||"{}");ids.forEach(id=>{document.getElementById(id).checked=saved[id]===true})}
 function entrar(){const senhaSalva=localStorage.getItem("ffmxSenha"),digitada=document.getElementById("senha").value,status=document.getElementById("status");if(!senhaSalva){status.textContent="Nenhuma senha foi criada. Abra o Gerador FFMX primeiro.";return}if(digitada===senhaSalva){document.getElementById("login").style.display="none";document.getElementById("conteudo").style.display="block";carregar();status.textContent=""}else status.textContent="Senha incorreta."}
+function salvar(){const c={};ids.forEach(id=>c[id]=document.getElementById(id).checked);localStorage.setItem("ffmxConfig",JSON.stringify(c));const s=document.getElementById("saveStatus");s.textContent="Opções salvas.";s.className="status success"}
+function abrirFreeFire(){const s=document.getElementById("saveStatus");s.textContent="Abrindo o Free Fire...";s.className="status success";window.location.href="intent://#Intent;scheme=freefire;package=com.dts.freefireth;end"}
 document.getElementById("entrar").addEventListener("click",entrar);
 document.getElementById("senha").addEventListener("keydown",e=>{if(e.key==="Enter")entrar()});
-document.getElementById("salvar").addEventListener("click",()=>{const c={};ids.forEach(id=>c[id]=document.getElementById(id).checked);localStorage.setItem("ffmxConfig",JSON.stringify(c));const s=document.getElementById("saveStatus");s.textContent="Opções salvas. Abrindo o Free Fire...";s.className="status success";setTimeout(()=>{window.location.href="intent://#Intent;scheme=freefire;package=com.dts.freefireth;end"},300)});
+document.getElementById("salvar").addEventListener("click",salvar);
+document.getElementById("abrirFreeFire").addEventListener("click",abrirFreeFire);
 document.getElementById("sair").addEventListener("click",()=>{document.getElementById("conteudo").style.display="none";document.getElementById("login").style.display="block";document.getElementById("senha").value=""});
 </script>
 </body>
