@@ -102,10 +102,7 @@ public class MainActivity extends Activity {
         Button entrar = botao("Abrir painel");
         root.addView(entrar, new LinearLayout.LayoutParams(-1, -2));
 
-        Button atualizar = botao("🔄 Atualizar senha do Gerador");
-        root.addView(atualizar, new LinearLayout.LayoutParams(-1, -2));
-
-        TextView info = texto("Gere uma senha no Gerador FFMX. Ela será reconhecida automaticamente pelo Painel enquanto o Gerador estiver instalado.", 13);
+        TextView info = texto("A senha é consultada automaticamente no Gerador FFMX. Não é necessário atualizar a senha manualmente.", 13);
         info.setTextColor(Color.GRAY);
         root.addView(info);
 
@@ -124,14 +121,9 @@ public class MainActivity extends Activity {
             }
         });
 
-        atualizar.setOnClickListener(v -> {
-            String generated = senhaDoGerador();
-            if (generated.isEmpty()) {
-                Toast.makeText(this, "Gere uma senha primeiro no Gerador FFMX.", Toast.LENGTH_LONG).show();
-            } else {
-                senha.setText(generated);
-                Toast.makeText(this, "Senha do Gerador carregada.", Toast.LENGTH_SHORT).show();
-            }
+        senha.setOnEditorActionListener((v, actionId, event) -> {
+            entrar.performClick();
+            return true;
         });
 
         setContentView(root);
@@ -160,8 +152,6 @@ public class MainActivity extends Activity {
         aimbot = opcao("🎯 Aimbot", "Opção do painel.");
         esp = opcao("👁️ ESP", "Opção do painel.");
         balaMagica = opcao("🔫 Bala Mágica", "Opção do painel.");
-        root.addView(aimbot.getParent() == null ? aimbot : new View(this));
-        root.removeView(aimbot);
         adicionarOpcao("🎯 Aimbot", "Opção do painel.", aimbot);
         adicionarOpcao("👁️ ESP", "Opção do painel.", esp);
         adicionarOpcao("🔫 Bala Mágica", "Opção do painel.", balaMagica);
