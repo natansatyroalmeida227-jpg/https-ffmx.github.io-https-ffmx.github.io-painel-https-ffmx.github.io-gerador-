@@ -17,4 +17,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "FFMX"
-include(":app")
+include(":app", ":play")
